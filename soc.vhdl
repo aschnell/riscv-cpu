@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std_unsigned.all;
 
--- SoC with RISC-V 32 core and RAM
+-- SoC with RISC-V 32 Bit Core and RAM
 
 entity soc is
   port(
@@ -17,6 +17,7 @@ architecture rtl of soc is
 
   signal pc, instr:     std_ulogic_vector(31 downto 0);
   signal readdata:      std_ulogic_vector(31 downto 0);
+  signal mem_ctl:        std_ulogic_vector(2 downto 0);
 
 begin
 
@@ -24,7 +25,7 @@ begin
 
   riscv32_0: entity work.riscv32 port map(
     clk, reset, pc, instr,
-    memwrite, dataaddr, writedata, readdata
+    memwrite, dataaddr, writedata, readdata, mem_ctl
   );
 
   imem_0: entity work.imem port map(
@@ -32,7 +33,7 @@ begin
   );
 
   dmem_0: entity work.dmem port map(
-    clk, memwrite, dataaddr, writedata, readdata
+    clk, memwrite, dataaddr, writedata, mem_ctl, readdata
   );
 
 end architecture rtl;

@@ -12,7 +12,8 @@ entity mux2 is
   );
 end;
 
-architecture behave of mux2 is
+architecture rtl of mux2 is
 begin
-  y <= d1 when s else d0;
+  y <= d1 when s else
+       d0;
 end;

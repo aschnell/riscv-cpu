@@ -1,0 +1,50 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std_unsigned.all;
+use ieee.numeric_std.all;
+
+entity alu_tb is
+end;
+
+architecture testbench of alu_tb is
+
+  signal clk:       std_ulogic := '0';
+  signal ctl:       std_ulogic_vector(3 downto 0) := "0000";
+  signal a, b:      std_ulogic_vector(31 downto 0) := x"00000000";
+  signal r:         std_ulogic_vector(31 downto 0);
+  signal zero:      std_ulogic;
+
+begin
+
+  dut: entity work.alu port map(
+    clk, a, b, ctl, r, zero
+  );
+
+  process
+  begin
+
+    ctl <= "0001";                      -- add
+    a <= std_logic_vector(to_signed(34, 32));
+    b <= std_logic_vector(to_signed(89, 32));
+    wait for 100 ns;
+    assert r = 34 + 89;
+
+    ctl <= "0011";                      -- and
+    a <= x"ff00ff00";
+    b <= x"ffff0000";
+    wait for 100 ns;
+    assert r = x"ff000000";
+
+    ctl <= "0100";                      -- or
+    wait for 100 ns;
+    assert r = x"ffffff00";
+
+    ctl <= "0101";                      -- xor
+    wait for 100 ns;
+    assert r = x"00ffff00";
+
+    wait;
+
+  end process;
+
+end;

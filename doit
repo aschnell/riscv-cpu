@@ -1,19 +1,26 @@
 #!/bin/bash -xe
 
+ghdl -a --std=08 probe.vhdl
+
 ghdl -a --std=08 adder.vhdl
 ghdl -a --std=08 flopr.vhdl
 ghdl -a --std=08 mux2.vhdl
+ghdl -a --std=08 mux3.vhdl
 ghdl -a --std=08 signext.vhdl
-ghdl -a --std=08 sl2.vhdl
-ghdl -a --std=08 sl12.vhdl
+ghdl -a --std=08 sl1.vhdl
+
+ghdl -a --std=08 common.vhdl
 
 ghdl -a --std=08 alu.vhdl
+ghdl -a --std=08 alu-tb.vhdl
 
-ghdl -a --std=08 regfile.vhdl
+ghdl -a --std=08 imm.vhdl
+
+ghdl -a --std=08 rbank.vhdl
+
 ghdl -a --std=08 imem.vhdl
 ghdl -a --std=08 dmem.vhdl
 
-ghdl -a --std=08 aludec.vhdl
 ghdl -a --std=08 maindec.vhdl
 
 ghdl -a --std=08 controller.vhdl
@@ -26,13 +33,23 @@ ghdl -a --std=08 soc-tb.vhdl
 
 ghdl -a --std=08 top.vhdl
 
-# ghdl -r --std=08 soc_tb --wave=soc-tb.ghw
+ghdl -r --std=08 alu_tb
 
-# yosys -m ghdl -p 'ghdl --std=08 top; synth_ice40 -json hardware.json'
+for name in test-*.vhdl ; do
+    ghdl -a --std=08 $name
+    a="${name%.*}"
+    b="${a/-/_}"
+    ghdl -r --std=08 ${b}
+done
 
-# nextpnr-ice40 --lp8k --package cm81 --json hardware.json --asc hardware.asc --pcf pins.pcf --freq 16.0
+exit 0
+
+ghdl -r --std=08 soc_tb --wave=soc-tb.ghw
+
+yosys -m ghdl -p 'ghdl --std=08 top; synth_ice40 -json hardware.json'
+
+nextpnr-ice40 --lp8k --package cm81 --json hardware.json --asc hardware.asc --pcf pins.pcf --freq 16.0
 
 # icetime -d lp8k hardware.asc
 
-# icepack hardware.asc hardware.bin
-
+icepack hardware.asc hardware.bin

@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std_unsigned.all;
 use std.env.finish;
+use work.probe.all;
 
 entity soc_tb is
 end;
@@ -9,8 +10,13 @@ end;
 architecture testbench of soc_tb is
 
   signal clk:                   std_ulogic;
-  signal reset, memwrite:       std_ulogic;
+  signal reset:                 std_ulogic;
+  signal memwrite:              std_ulogic;
   signal writedata, dataaddr:   std_ulogic_vector(31 downto 0);
+
+  /*
+  alias pc is <<signal dut.soc.pc : std_ulogic_vector(31 downto 0)>>;
+  */
 
 begin
 
@@ -50,6 +56,22 @@ begin
       elsif (dataaddr /= 80) then
         report "Simulation failed" severity failure;
       end if;
+    end if;
+  end process;
+  */
+
+  /*
+  process(probe_rx1)
+  begin
+     report "probe_rx1:" & to_string(probe_rx1);
+  end process;
+  */
+
+  /*
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      report "haha pc:" & to_hstring(pc);
     end if;
   end process;
   */
