@@ -1,27 +1,25 @@
 #!/bin/bash -xe
 
+ghdl -a --std=08 common.vhdl
+
 ghdl -a --std=08 probe.vhdl
 
 ghdl -a --std=08 adder.vhdl
 ghdl -a --std=08 flopr.vhdl
 ghdl -a --std=08 mux2.vhdl
 ghdl -a --std=08 mux3.vhdl
-ghdl -a --std=08 signext.vhdl
-ghdl -a --std=08 sl1.vhdl
-
-ghdl -a --std=08 common.vhdl
 
 ghdl -a --std=08 alu.vhdl
 ghdl -a --std=08 alu-tb.vhdl
 
+ghdl -a --std=08 branch.vhdl
+
 ghdl -a --std=08 imm.vhdl
 
-ghdl -a --std=08 rbank.vhdl
+ghdl -a --std=08 rfile.vhdl
 
 ghdl -a --std=08 imem.vhdl
 ghdl -a --std=08 dmem.vhdl
-
-ghdl -a --std=08 maindec.vhdl
 
 ghdl -a --std=08 controller.vhdl
 ghdl -a --std=08 datapath.vhdl
@@ -32,19 +30,19 @@ ghdl -a --std=08 soc.vhdl
 ghdl -a --std=08 soc-tb.vhdl
 
 ghdl -a --std=08 top.vhdl
+ghdl -a --std=08 top-tb.vhdl
 
 ghdl -r --std=08 alu_tb
 
-for name in test-*.vhdl ; do
-    ghdl -a --std=08 $name
-    a="${name%.*}"
-    b="${a/-/_}"
-    ghdl -r --std=08 ${b}
+for name in test-*.test ; do
+    echo ${name}
+    ./run-test.py ${name}
 done
 
 exit 0
 
 ghdl -r --std=08 soc_tb --wave=soc-tb.ghw
+ghdl -r --std=08 top_tb --wave=top-tb.ghw > /dev/null
 
 yosys -m ghdl -p 'ghdl --std=08 top; synth_ice40 -json hardware.json'
 

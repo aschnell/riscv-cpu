@@ -1,0 +1,28 @@
+-- ASM 1
+
+l0:
+	li	x2, -1
+	li	x3, 1
+	bltu	x2, x3, l1
+	li	x1, 7
+l1:
+	nop
+
+-- CHECKS 1
+
+rx1 = x"00000007"
+
+
+-- ASM 2
+
+l0:
+	li	x2, -1
+	li	x3, 1
+	bltu	x2, x3, l1
+	li	x1, 9
+l1:
+	nop
+
+-- CHECKS 2
+
+rx1 = x"00000009"

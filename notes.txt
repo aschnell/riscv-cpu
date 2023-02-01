@@ -1,0 +1,11 @@
+
+Memory Layout:
+
+0x00000000  text
+0x000000ff
+
+0x00010000  data
+0x000100ff
+
+0x00020000  LED
+

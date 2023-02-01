@@ -1,3 +1,3 @@
 
-A Simple Single-Cycle RISC-V 32-Bit CPU
+A simple single-cycle RISC-V 32-bit CPU
 

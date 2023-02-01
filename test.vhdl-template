@@ -1,0 +1,63 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use std.env.finish;
+use work.probe.all;
+
+entity tmp is
+end;
+
+architecture testbench of tmp is
+
+  signal clk:   std_ulogic;
+  signal reset: std_ulogic;
+
+begin
+
+  probe_fake_imem <= '1';
+
+$instructions
+
+  dut: entity work.soc port map(clk, reset);
+
+  process is
+  begin
+    reset <= '1';
+    wait for 75 ns;
+    reset <= '0';
+    wait;
+  end process;
+
+  process is
+  begin
+
+    loop
+      clk <= '1';
+      wait for 50 ns;
+      clk <= '0';
+      wait for 50 ns;
+
+      report "instr:" & to_hstring(probe_instr);
+      exit when probe_instr = x"0100000F"; -- pause
+      exit when probe_instr = x"02a00013"; -- li zero, 42
+      if now > 10000 ns then
+        report "infinit loop (?)" severity failure;
+      end if;
+    end loop;
+
+    report "rx1:" & to_hstring(probe_rx1);
+    report "rx2:" & to_hstring(probe_rx2);
+    report "rx3:" & to_hstring(probe_rx3);
+
+    report "dmem0:" & to_hstring(probe_dmem0);
+    report "dmem1:" & to_hstring(probe_dmem1);
+    report "dmem2:" & to_hstring(probe_dmem2);
+    report "dmem3:" & to_hstring(probe_dmem3);
+
+$checks
+
+    report "test succeeded";
+    finish;
+
+  end process;
+
+end architecture testbench;

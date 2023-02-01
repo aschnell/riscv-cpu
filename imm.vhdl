@@ -1,5 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.common.all;
+
+-- see figure 2.4
 
 entity imm is
   port(
@@ -13,26 +16,44 @@ end;
 architecture rtl of imm is
 begin
 
-  -- TODO sign ext
-
-  process(imm_ctl, instr) begin
+  process(all) is
+  begin
     case imm_ctl is
 
-      when "001" => result <= "00000000000000000000" & instr(31 downto 20);
+      -- I-immediate
+      when IMM_I =>
+        result <= (31 downto 11 => instr(31)) & instr(30 downto 20);
 
-      when "010" => result <= "00000000000000000000" & instr(31 downto 25) & instr(11 downto 7);
+      -- S-immediate
+      when IMM_S =>
+        result <= (31 downto 11 => instr(31)) & instr(30 downto 25) & instr(11 downto 7);
 
-      when "011" => result <= instr(31 downto 12) & "000000000000";
+      -- B-immediate
+      when IMM_B =>
+        result <= (31 downto 12 => instr(31)) & instr(7) & instr(30 downto 25) &
+                  instr(11 downto 8) & '0';
 
-      when "101" => result <= "00000000000" & instr(31) & instr(19 downto 12) &
-                              instr(20) & instr(30 downto 21) & "0";
+      -- U-immediate
+      when IMM_U =>
+        result <= instr(31 downto 12) & (11 downto 0 => '0');
 
-      when others => result<= (others => 'X');
+      -- J-immediate
+      when IMM_J =>
+        result <= (31 downto 20 => instr(31)) & instr(19 downto 12) &
+                  instr(20) & instr(30 downto 21) & '0';
+
+      -- shamt (shift amount)
+      when IMM_SHAMT =>
+        result <= (31 downto 5 => '0') & instr(24 downto 20);
+
+      when others =>
+        result <= (31 downto 0 => 'X');
 
     end case;
   end process;
 
-  process(clk)
+  /*
+  process(clk) is
   begin
     if rising_edge(clk) then
 
@@ -44,5 +65,6 @@ begin
 
     end if;
   end process;
+  */
 
 end architecture rtl;

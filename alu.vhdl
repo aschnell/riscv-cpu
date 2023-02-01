@@ -2,66 +2,61 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.numeric_std_unsigned.all;
+use work.common.all;
 
 entity alu is
   port(
     clk:        in  std_ulogic;
-    a, b:       in  std_ulogic_vector(31 downto 0);
+    a, b:       in  std_ulogic_vector(XLEN - 1 downto 0);
     alu_ctl:    in  std_ulogic_vector(3 downto 0);
-    result:     buffer std_ulogic_vector(31 downto 0);
-    zero:       out std_ulogic
+    result:     out std_ulogic_vector(XLEN - 1 downto 0)
   );
 end;
 
 
--- TODO optimize alu_ctl to directly map the opcode (like for mem_ctl)
-
+-- TODO optimize for negative
 
 architecture rtl of alu is
 begin
 
-  process(all) begin
+  process(all) is
+  begin
+
     case alu_ctl is
 
-      when "0001" => result <= a + b;
-      when "0010" => result <= a - b;
+      when ALU_ADD => result <= a + b;
+      when ALU_SUB => result <= a - b;
 
-      when "0011" => result <= a and b;
-      when "0100" => result <= a or b;
-      when "0101" => result <= a xor b;
+      when ALU_AND => result <= a and b;
+      when ALU_OR  => result <= a or b;
+      when ALU_XOR => result <= a xor b;
 
-      /*
-      when "0110" => result <= a sll b;
-      when "0111" => result <= a srl b;
-      when "1000" => result <= a sra b;
-      */
+      when ALU_SLL => result <= std_ulogic_vector(shift_left(unsigned(a), to_integer(b)));
+      when ALU_SRL => result <= std_ulogic_vector(shift_right(unsigned(a), to_integer(b)));
+      when ALU_SRA => result <= std_ulogic_vector(shift_right(signed(a), to_integer(b)));
 
-      when "1001" => result <= a;
-      when "1010" => result <= b;
+      when ALU_A   => result <= a;
+      when ALU_B   => result <= b;
 
-      when "1011" => result <= x"00000001" when a < b else x"00000000";
+      when ALU_SLT => result <= std_logic_vector(to_signed(1, XLEN)) when a < b else
+                                std_logic_vector(to_signed(0, XLEN));
+
+      when ALU_SLTU => result <= std_logic_vector(to_unsigned(1, XLEN)) when a < b else
+                                 std_logic_vector(to_unsigned(0, XLEN));
 
       when others => result <= (others => 'X');
 
     end case;
   end process;
 
-  /*
-  zero <= '1' when result = x"00000000" else '0';
-  */
-
-  process(clk)
+  process(clk) is
   begin
     if rising_edge(clk) then
 
-      if alu_ctl = "0000" then
-        report "alu_ctl: none";
-      else
-        report "alu_ctl:" & to_string(alu_ctl) & " a:" & to_string(a) & " b:" & to_string(b) &
-          " result:" & to_string(result);
-      end if;
+      report "alu_ctl:" & to_string(alu_ctl) & " a:" & to_string(a) & " b:" & to_string(b) &
+        " result:" & to_string(result);
 
     end if;
   end process;
 
-end;
+end architecture rtl;

@@ -1,0 +1,8 @@
+-- ASM 1
+
+	li	x1, 0x12345678
+	andi	x3, x1, 0x0ff
+
+-- CHECKS 1
+
+rx3 = x"00000078"

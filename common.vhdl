@@ -3,75 +3,85 @@ use ieee.std_logic_1164.all;
 
 package common is
 
+  constant XLEN:            natural := 32;
+
+  constant OPCODE_LOAD:     std_ulogic_vector(6 downto 0) := "0000011";
+  constant OPCODE_ALUI:     std_ulogic_vector(6 downto 0) := "0010011"; -- ALU operation with immediate
+  constant OPCODE_AUIPC:    std_ulogic_vector(6 downto 0) := "0010111";
+  constant OPCODE_ALU:      std_ulogic_vector(6 downto 0) := "0110011"; -- ALU operation
+  constant OPCODE_LUI:      std_ulogic_vector(6 downto 0) := "0110111";
+  constant OPCODE_STORE:    std_ulogic_vector(6 downto 0) := "0100011";
+  constant OPCODE_BRANCH:   std_ulogic_vector(6 downto 0) := "1100011";
+  constant OPCODE_JALR:     std_ulogic_vector(6 downto 0) := "1100111";
+  constant OPCODE_JAL:      std_ulogic_vector(6 downto 0) := "1101111";
+
+  constant IMM_I:           std_ulogic_vector(2 downto 0) := "001";
+  constant IMM_S:           std_ulogic_vector(2 downto 0) := "010";
+  constant IMM_U:           std_ulogic_vector(2 downto 0) := "011";
+  constant IMM_B:           std_ulogic_vector(2 downto 0) := "100";
+  constant IMM_J:           std_ulogic_vector(2 downto 0) := "101";
+  constant IMM_SHAMT:       std_ulogic_vector(2 downto 0) := "110";
+  constant IMM_NONE:        std_ulogic_vector(2 downto 0) := "XXX";
+
+  constant ALU_SRCA_RS1:    std_ulogic := '0';
+  constant ALU_SRCA_PC:     std_ulogic := '1';
+  constant ALU_SRCA_NONE:   std_ulogic := 'X';
+
+  constant ALU_SRCB_RS2:    std_ulogic := '0';
+  constant ALU_SRCB_IMM:    std_ulogic := '1';
+  constant ALU_SRCB_NONE:   std_ulogic := 'X';
+
+  constant ALU_ADD:         std_ulogic_vector(3 downto 0) := "0000"; -- funct3 for OPCODE_ALUI
+  constant ALU_SLL:         std_ulogic_vector(3 downto 0) := "0001"; -- funct3 for OPCODE_ALUI
+  constant ALU_SLT:         std_ulogic_vector(3 downto 0) := "0010"; -- funct3 for OPCODE_ALUI
+  constant ALU_SLTU:        std_ulogic_vector(3 downto 0) := "0011"; -- funct3 for OPCODE_ALUI
+  constant ALU_XOR:         std_ulogic_vector(3 downto 0) := "0100"; -- funct3 for OPCODE_ALUI
+  constant ALU_SRL:         std_ulogic_vector(3 downto 0) := "0101"; -- funct3 for OPCODE_ALUI
+  constant ALU_OR:          std_ulogic_vector(3 downto 0) := "0110"; -- funct3 for OPCODE_ALUI
+  constant ALU_AND:         std_ulogic_vector(3 downto 0) := "0111"; -- funct3 for OPCODE_ALUI
+  constant ALU_SUB:         std_ulogic_vector(3 downto 0) := "1000"; -- '1' & ALU_ADD(2..0)
+  constant ALU_SRA:         std_ulogic_vector(3 downto 0) := "1101"; -- '1' & ALU_SRL(2..0)
+  constant ALU_A:           std_ulogic_vector(3 downto 0) := "1110";
+  constant ALU_B:           std_ulogic_vector(3 downto 0) := "1111";
+  constant ALU_NONE:        std_ulogic_vector(3 downto 0) := "XXXX";
+
+  constant RD_SRC_ALU:      std_ulogic_vector(1 downto 0) := "00";
+  constant RD_SRC_MEM:      std_ulogic_vector(1 downto 0) := "01";
+  constant RD_SRC_PCP4:     std_ulogic_vector(1 downto 0) := "10"; -- pc + 4
+  constant RD_SRC_NONE:     std_ulogic_vector(1 downto 0) := "XX";
+
+  constant BRANCH_EQ:       std_ulogic_vector(2 downto 0) := "000"; -- funct3 for OPCODE_BRANCH
+  constant BRANCH_NE:       std_ulogic_vector(2 downto 0) := "001"; -- funct3 for OPCODE_BRANCH
+  constant BRANCH_NEVER:    std_ulogic_vector(2 downto 0) := "010";
+  constant BRANCH_LT:       std_ulogic_vector(2 downto 0) := "100"; -- funct3 for OPCODE_BRANCH
+  constant BRANCH_GE:       std_ulogic_vector(2 downto 0) := "101"; -- funct3 for OPCODE_BRANCH
+  constant BRANCH_LTU:      std_ulogic_vector(2 downto 0) := "110"; -- funct3 for OPCODE_BRANCH
+  constant BRANCH_GEU:      std_ulogic_vector(2 downto 0) := "111"; -- funct3 for OPCODE_BRANCH
+  constant BRANCH_NONE:     std_ulogic_vector(2 downto 0) := "XXX";
+
+  constant JMP_PCP4:        std_ulogic_vector(1 downto 0) := "00"; -- pc + 4
+  constant JMP_PCPIMM:      std_ulogic_vector(1 downto 0) := "01"; -- pc + imm
+  constant JMP_RS1PIMM:     std_ulogic_vector(1 downto 0) := "10"; -- rs1 + imm
+  constant JMP_NONE:        std_ulogic_vector(1 downto 0) := "XX";
+
+  constant MEM_1B:          std_ulogic_vector(2 downto 0) := "000"; -- funct3 for OPCODE_LOAD and OPCODE_STORE
+  constant MEM_2B:          std_ulogic_vector(2 downto 0) := "001"; -- funct3 for OPCODE_LOAD and OPCODE_STORE
+  constant MEM_4B:          std_ulogic_vector(2 downto 0) := "010"; -- funct3 for OPCODE_LOAD and OPCODE_STORE
+  constant MEM_1BU:         std_ulogic_vector(2 downto 0) := "100"; -- funct3 for OPCODE_LOAD and OPCODE_STORE
+  constant MEM_2BU:         std_ulogic_vector(2 downto 0) := "101"; -- funct3 for OPCODE_LOAD and OPCODE_STORE
+  constant MEM_NONE:        std_ulogic_vector(2 downto 0) := "XXX";
+
   type controls_t is record
-
-    /* enable write to rd */
-    rd_write:   std_ulogic;
-
-    /*
-      alu src a
-      '0' rs1
-      '1' pc
-    */
+    rd_write:   std_ulogic;                     -- enable write to rd
+    mem_write:  std_ulogic;                     -- enable write to memory
     alu_srca:   std_ulogic;
-
-    /*
-      alu src b
-      '0' rs2
-      '1' imm
-    */
     alu_srcb:   std_ulogic;
-
-    /*
-    */
-    branch:     std_ulogic;
-
-    /* enable write to memory */
-    memwrite:   std_ulogic;
-
-    /*
-      rc src: "00" alu, "01" memory, "10" pc + 4
-    */
     rd_src:     std_ulogic_vector(1 downto 0);
-
-    /*
-    */
-    jump:       std_ulogic;
-
-    /*
-    0000   none
-    0001   a + b
-    0010   a - b
-    0011   a and b
-    0100   a or b
-    0101   a xor b
-    0111   a sll b
-    0111   a srl b
-    1000   a sra b
-    1001   a
-    1010   b
-    1011   a < b
-    */
+    jmp_ctl:    std_ulogic_vector(1 downto 0);
     alu_ctl:    std_ulogic_vector(3 downto 0);
-
-    /*
-    001   I-type: addi, lw, jalr
-    010   S-type: sw
-    011   U-type: lui, auipc
-    100   B-type: beq, bne
-    101   J-type: jal, j
-    */
     imm_ctl:    std_ulogic_vector(2 downto 0);
-
-    /*
-    000   1 byte
-    001   2 byte
-    010   4 byte
-    100   1 byte sign ext
-    101   2 byte sign ext
-    */
     mem_ctl:    std_ulogic_vector(2 downto 0);
-
+    branch_ctl: std_ulogic_vector(2 downto 0);
   end record controls_t;
 
 end package;

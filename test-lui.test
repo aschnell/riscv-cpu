@@ -1,0 +1,8 @@
+-- ASM 1
+
+	li	x1, 0xf
+	lui	x1, 0x12345
+
+-- CHECKS 1
+
+rx1 = x"12345000"

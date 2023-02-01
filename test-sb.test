@@ -1,0 +1,21 @@
+-- ASM 1
+
+	li	x1, 0x12345678
+	lui	x3, 0x00010
+	sb	x1, 6(x3)
+
+-- CHECKS 1
+
+dmem1 = x"00780000"
+
+
+-- ASM 2
+
+	li	x1, 0x12345678
+	lui	x3, 0x00010
+	sw	x1, 4(x3)
+	sb      zero, 6(x3)
+
+-- CHECKS 2
+
+dmem1 = x"12005678"

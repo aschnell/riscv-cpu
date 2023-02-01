@@ -1,17 +1,18 @@
 library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.numeric_std_unsigned.all;
-
--- adder
+use work.common.all;
 
 entity adder is
   port(
-    a, b: in  std_ulogic_vector(31 downto 0);
-    y:    out std_ulogic_vector(31 downto 0)
+    a, b: in  std_ulogic_vector(XLEN - 1 downto 0);
+    y:    out std_ulogic_vector(XLEN - 1 downto 0)
   );
 end;
 
-architecture behave of adder is
+architecture rtl of adder is
 begin
+
   y <= a + b;
-end;
+
+end architecture rtl;

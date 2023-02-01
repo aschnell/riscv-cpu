@@ -1,0 +1,8 @@
+-- ASM 1
+
+	nop
+	auipc x1, 0x00020
+
+-- CHECKS 1
+
+rx1 = x"00020004"
