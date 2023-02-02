@@ -10,11 +10,11 @@ use work.probe.all;
 
 entity dmem is
   port(
-    clk:        in std_ulogic;
-    we:         in std_ulogic;                            -- write enable
-    addr:       in std_ulogic_vector(XLEN - 1 downto 0);  -- address
-    data_in:    in std_ulogic_vector(XLEN - 1 downto 0);  -- data in
-    mem_ctl:    in std_ulogic_vector(2 downto 0);
+    clk:        in  std_ulogic;
+    we:         in  std_ulogic;                           -- write enable
+    addr:       in  std_ulogic_vector(XLEN - 1 downto 0); -- address
+    data_in:    in  std_ulogic_vector(XLEN - 1 downto 0); -- data in
+    mem_ctl:    in  std_ulogic_vector(2 downto 0);
     data_out:   out std_ulogic_vector(XLEN - 1 downto 0)  -- data out
   );
 end;

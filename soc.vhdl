@@ -6,8 +6,8 @@ use work.common.all;
 
 entity soc is
   port(
-    clk:                in std_ulogic;
-    reset:              in std_ulogic;
+    clk:                in  std_ulogic;
+    reset:              in  std_ulogic;
     writedata:          out std_ulogic_vector(XLEN - 1 downto 0);
     dataaddr:           out std_ulogic_vector(XLEN - 1 downto 0);
     mem_write:          out std_ulogic

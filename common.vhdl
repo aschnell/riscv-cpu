@@ -85,7 +85,7 @@ package common is
     alu_srca:   std_ulogic;
     alu_srcb:   std_ulogic;
 
-    pc_ctl:   std_ulogic_vector(1 downto 0);
+    pc_ctl:     std_ulogic_vector(1 downto 0);
     branch_ctl: std_ulogic_vector(2 downto 0);
 
   end record controls_t;

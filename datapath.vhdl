@@ -14,7 +14,7 @@ entity datapath is
     rs2:        out std_ulogic_vector(XLEN - 1 downto 0);
     readdata:   in  std_ulogic_vector(XLEN - 1 downto 0);
 
-    ctl:        in controls_t
+    ctl:        in  controls_t
   );
 end;
 

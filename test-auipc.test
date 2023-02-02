@@ -5,6 +5,6 @@
 
 -- CHECKS 1
 
-# PC is 0x10000 after reset
+# reset sets PC to 0x10000
 
 x1 = x"00030004"

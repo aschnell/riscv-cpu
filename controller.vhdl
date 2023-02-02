@@ -24,7 +24,7 @@ architecture rtl of controller is
 
 begin
 
-  -- TODO detect unknown instructions?
+  -- TODO detect unknown instructions
 
   process(all) is
   begin

@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity top is
   port(
-    CLK:    in std_ulogic;    -- 16 MHz clock
+    CLK:    in  std_ulogic;   -- 16 MHz clock
     LED:    out std_ulogic;   -- User/boot LED next to power LED
     USBPU:  out std_ulogic;   -- USB pull-up resistor
 

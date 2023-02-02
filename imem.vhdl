@@ -10,9 +10,9 @@ use work.probe.all;
 
 entity imem is
   port(
-    clk:        in std_ulogic;
-    re:         in std_ulogic;
-    addr:       in std_ulogic_vector(XLEN - 1 downto 0);
+    clk:        in  std_ulogic;
+    re:         in  std_ulogic;
+    addr:       in  std_ulogic_vector(XLEN - 1 downto 0);
     data_out:   out std_ulogic_vector(XLEN - 1 downto 0)
   );
 end;
