@@ -1,11 +1,24 @@
 
 Memory Layout:
 
-0x00000000  text
-0x000000ff
-
-0x00010000  data
+0x00010000  text
 0x000100ff
 
-0x00020000  LED
+-> 64 instructions
+
+
+0x00020000  data
+0x000200ff
+
+-> 64 (4 byte) words
+
+
+"In the standard RISC-V calling convention, the stack grows downward
+and the stack pointer is always kept 16-byte aligned."
+
+
+Memory-mapped I/O devices:
+
+0x00080000  1 on board LED
+0x00080001  8 external LEDs
 

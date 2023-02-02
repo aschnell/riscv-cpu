@@ -38,15 +38,14 @@ $instructions
 
       report "instr:" & to_hstring(probe_instr);
       exit when probe_instr = x"0100000F"; -- pause
-      exit when probe_instr = x"02a00013"; -- li zero, 42
       if now > 10000 ns then
         report "infinit loop (?)" severity failure;
       end if;
     end loop;
 
-    report "rx1:" & to_hstring(probe_rx1);
-    report "rx2:" & to_hstring(probe_rx2);
-    report "rx3:" & to_hstring(probe_rx3);
+    report "x1:" & to_hstring(probe_x1);
+    report "x2:" & to_hstring(probe_x2);
+    report "x3:" & to_hstring(probe_x3);
 
     report "dmem0:" & to_hstring(probe_dmem0);
     report "dmem1:" & to_hstring(probe_dmem1);

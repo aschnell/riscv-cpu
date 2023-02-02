@@ -24,10 +24,9 @@ ghdl -a --std=08 dmem.vhdl
 ghdl -a --std=08 controller.vhdl
 ghdl -a --std=08 datapath.vhdl
 
-ghdl -a --std=08 riscv32.vhdl
+ghdl -a --std=08 core.vhdl
 
 ghdl -a --std=08 soc.vhdl
-ghdl -a --std=08 soc-tb.vhdl
 
 ghdl -a --std=08 top.vhdl
 ghdl -a --std=08 top-tb.vhdl
@@ -41,7 +40,6 @@ done
 
 exit 0
 
-ghdl -r --std=08 soc_tb --wave=soc-tb.ghw
 ghdl -r --std=08 top_tb --wave=top-tb.ghw > /dev/null
 
 yosys -m ghdl -p 'ghdl --std=08 top; synth_ice40 -json hardware.json'

@@ -2,8 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.common.all;
 
--- see figure 2.4
-
 entity imm is
   port(
     clk:        in  std_ulogic;
@@ -52,19 +50,15 @@ begin
     end case;
   end process;
 
-  /*
+  -- rtl_synthesis off
   process(clk) is
   begin
     if rising_edge(clk) then
 
-      if imm_ctl = "000" then
-        report "imm_ctl: none";
-      else
-        report "imm_ctl:" & to_string(imm_ctl) & " result:" & to_string(result);
-      end if;
+      report "imm_ctl:" & to_string(imm_ctl) & " result:" & to_string(result);
 
     end if;
   end process;
-  */
+  -- rtl_synthesis on
 
 end architecture rtl;

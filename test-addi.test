@@ -4,7 +4,7 @@
 
 -- CHECKS 1
 
-rx1 = x"00000678"
+x1 = x"00000678"
 
 
 -- ASM 2
@@ -13,7 +13,7 @@ rx1 = x"00000678"
 
 -- CHECKS 2
 
-rx1 = x"ffffffff"
+x1 = x"ffffffff"
 
 
 -- ASM 3
@@ -23,4 +23,4 @@ rx1 = x"ffffffff"
 
 -- CHECKS 3
 
-rx1 = x"00000054"
+x1 = x"00000054"

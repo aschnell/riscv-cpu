@@ -25,9 +25,9 @@ package probe is
   signal probe_dmem2: std_ulogic_vector(XLEN - 1 downto 0);
   signal probe_dmem3: std_ulogic_vector(XLEN - 1 downto 0);
 
-  signal probe_rx1: std_ulogic_vector(XLEN - 1 downto 0);
-  signal probe_rx2: std_ulogic_vector(XLEN - 1 downto 0);
-  signal probe_rx3: std_ulogic_vector(XLEN - 1 downto 0);
+  signal probe_x1: std_ulogic_vector(XLEN - 1 downto 0);
+  signal probe_x2: std_ulogic_vector(XLEN - 1 downto 0);
+  signal probe_x3: std_ulogic_vector(XLEN - 1 downto 0);
 
   -- rtl_synthesis on
 

@@ -30,68 +30,44 @@ architecture rtl of rfile is
 
 begin
 
-  -- three-ported register file
-  -- read two ports combinationally
-  -- write third port on rising edge of clock
-  -- register 0 hardwired to 0
-
-  /*
-  process(clk) is
-  begin
-    if rising_edge(clk) then
-      for i in 0 to 31 loop
-        if ram_data(i) /= 0 then
-          report "rx" & to_string(i) & ": " & to_string(to_integer(ram_data(i)));
-        end if;
-      end loop;
-    end if;
-  end process;
-  */
-
   process(clk) is
   begin
     if rising_edge(clk) then
       if we3 = '1' and addr3 /= 0 then
-        report "write rx" & to_string(to_integer(addr3)) & ":" & to_string(data3_in);
         ram_data(to_integer(addr3)) <= data3_in;
       end if;
     end if;
   end process;
 
-  -- not dealing with rx0 during read seems to be faster
+  -- no special dealing for x0 during read is faster
 
-  process(all) is
-  begin
-    -- if addr1 = 0 then
-    -- data1_out <= x"00000000";
-    -- else
-    data1_out <= ram_data(to_integer(addr1));
-    -- end if;
-  end process;
-
-  process(all) is
-  begin
-    -- if addr2 = 0 then
-    -- data2_out <= x"00000000";
-    -- else
-    data2_out <= ram_data(to_integer(addr2));
-    -- end if;
-  end process;
+  data1_out <= ram_data(to_integer(addr1));
+  data2_out <= ram_data(to_integer(addr2));
 
   -- rtl_synthesis off
-  probe_rx1 <= ram_data(1);
-  probe_rx2 <= ram_data(2);
-  probe_rx3 <= ram_data(3);
+  probe_x1 <= ram_data(1);
+  probe_x2 <= ram_data(2);
+  probe_x3 <= ram_data(3);
   -- rtl_synthesis on
 
-  /*
+  -- rtl_synthesis off
   process(clk) is
   begin
     if rising_edge(clk) then
-      report "rs1:" & to_string(addr1) & " " & to_string(ram_data(to_integer(addr1)));
-      report "rs2:" & to_string(addr2) & " " & to_string(ram_data(to_integer(addr2)));
+
+      report "rs1:" & to_string(addr1) & " " & to_string(ram_data(to_integer(addr1))) & " " &
+             to_hstring(ram_data(to_integer(addr1)));
+
+      report "rs2:" & to_string(addr2) & " " & to_string(ram_data(to_integer(addr2))) & " " &
+             to_hstring(ram_data(to_integer(addr2)));
+
+      if we3 = '1' and addr3 /= 0 then
+        report "write r" & to_string(to_integer(addr3)) & ":" & to_string(data3_in) & " " &
+          to_hstring(data3_in);
+      end if;
+
     end if;
   end process;
-  */
+  -- rtl_synthesis on
 
 end architecture rtl;

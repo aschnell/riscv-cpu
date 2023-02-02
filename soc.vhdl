@@ -6,10 +6,11 @@ use work.common.all;
 
 entity soc is
   port(
-    clk:                 in std_ulogic;
-    reset:               in std_ulogic;
-    writedata, dataaddr: out std_ulogic_vector(XLEN - 1 downto 0);
-    memwrite:            out std_ulogic
+    clk:                in std_ulogic;
+    reset:              in std_ulogic;
+    writedata:          out std_ulogic_vector(XLEN - 1 downto 0);
+    dataaddr:           out std_ulogic_vector(XLEN - 1 downto 0);
+    mem_write:          out std_ulogic
   );
 end entity;
 
@@ -24,17 +25,17 @@ begin
 
   -- instantiate processor and memories
 
-  riscv32_0: entity work.riscv32 port map(
-    clk, reset, pc, instr, memwrite, dataaddr, writedata, readdata,
+  core_0: entity work.core port map(
+    clk, reset, pc, instr, mem_write, dataaddr, writedata, readdata,
     mem_ctl
   );
 
   imem_0: entity work.imem port map(
-    pc(7 downto 2), instr
+    clk, '1', pc, instr
   );
 
   dmem_0: entity work.dmem port map(
-    clk, memwrite, dataaddr, writedata, mem_ctl, readdata
+    clk, mem_write, dataaddr, writedata, mem_ctl, readdata
   );
 
 end architecture rtl;

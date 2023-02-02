@@ -10,23 +10,18 @@ from string import Template
 class Test:
 
     def __init__(self, asm, checks):
+
+        if not asm:
+            raise RuntimeError("empty ASM")
+
+        if not checks:
+            raise RuntimeError("empty CHECKS")
+
         self.asm = asm
         self.checks = checks
 
-
-def haha(test):
-
-    if not test.asm:
-        raise RuntimeError("empty ASM")
-
-    if not test.checks:
-        raise RuntimeError("empty CHECKS")
-
-    test.asm.append("")
-    test.asm.append("\tpause")
-    # test.asm.append("\taddi\tzero, zero, 42")
-
-    return test
+        self.asm.append("")
+        self.asm.append("\tpause")
 
 
 def load_tests():
@@ -46,16 +41,14 @@ def load_tests():
     for line in fileinput.input():
         line = line.rstrip()
 
-        if not line:
+        if not line or line.startswith("#"):
             continue
 
         if rx1.match(line):
-
             if stage == Stage.CHECKS:
-                tests.append(haha(Test(asm, checks)))
+                tests.append(Test(asm, checks))
                 asm = []
                 checks = []
-
             stage = Stage.ASM
             continue
 
@@ -69,7 +62,7 @@ def load_tests():
         if stage == Stage.CHECKS:
             checks.append(line)
 
-    tests.append(haha(Test(asm, checks)))
+    tests.append(Test(asm, checks))
 
     return tests
 
@@ -82,14 +75,16 @@ def write_asm(test):
             f.write('\n')
 
 
+def run_as(test):
+
+    cmd = ["riscv64-elf-as", "-march=rv32i_zihintpause", "-mabi=ilp32", "tmp.s", "-o", "tmp.o"]
+    subprocess.run(cmd, check = True)
+
+
 def write_vhdl(test):
 
-    subprocess.run(["riscv64-elf-as", "-march=rv32i_zihintpause", "-mabi=ilp32", "tmp.s", "-o", "tmp.o"], check = True)
-    # subprocess.run(["llvm-mc", "--arch=riscv32", "tmp.s", "--filetype=obj", "-o", "tmp.o"], check = True)
-
-    cmd2 = ["riscv64-elf-objdump", "-march=rv32i", "-mabi=ilp32", "--disassemble", "-m", "riscv", "tmp.o"]
-
-    popen = subprocess.Popen(cmd2, stdout=subprocess.PIPE, universal_newlines = True)
+    cmd = ["riscv64-elf-objdump", "-march=rv32i", "-mabi=ilp32", "--disassemble", "-m", "riscv", "tmp.o"]
+    popen = subprocess.Popen(cmd, stdout = subprocess.PIPE, universal_newlines = True)
 
     machine_code = []
 
@@ -120,7 +115,6 @@ def write_vhdl(test):
         if m:
             instructions.append("                              -- {1}:".format(m[1], m[2]))
 
-
     checks = []
 
     for t in test.checks:
@@ -140,9 +134,7 @@ def write_vhdl(test):
 
 
 def run_test(test):
-
     subprocess.run(["ghdl", "-a", "--std=08", "tmp.vhdl"], check = True)
-
     subprocess.run(["ghdl", "-r", "--std=08", "tmp"], check = True)
 
 
@@ -150,5 +142,6 @@ tests = load_tests()
 
 for test in tests:
     write_asm(test)
+    run_as(test)
     write_vhdl(test)
     run_test(test)

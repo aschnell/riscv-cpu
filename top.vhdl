@@ -8,14 +8,14 @@ entity top is
     LED:    out std_ulogic;   -- User/boot LED next to power LED
     USBPU:  out std_ulogic;   -- USB pull-up resistor
 
-    PIN_11: out std_ulogic;
-    PIN_12: out std_ulogic;
-    PIN_13: out std_ulogic;
-    PIN_14: out std_ulogic;
-    PIN_15: out std_ulogic;
-    PIN_16: out std_ulogic;
     PIN_17: out std_ulogic;
-    PIN_18: out std_ulogic
+    PIN_18: out std_ulogic;
+    PIN_19: out std_ulogic;
+    PIN_20: out std_ulogic;
+    PIN_21: out std_ulogic;
+    PIN_22: out std_ulogic;
+    PIN_23: out std_ulogic;
+    PIN_24: out std_ulogic
   );
 end entity;
 
@@ -53,9 +53,11 @@ begin
   process(CLK) is
   begin
     if rising_edge(CLK) then
-      if mem_we = '1' and mem_addr = x"00020000" then
-        LED <= mem_data(5);
-        (PIN_11, PIN_12, PIN_13, PIN_14, PIN_15, PIN_16, PIN_17, PIN_18) <= mem_data(7 downto 0);
+      if mem_we = '1' and mem_addr = x"00080000" then
+        LED <= mem_data(0);
+      end if;
+      if mem_we = '1' and mem_addr = x"00080001" then
+        (PIN_24, PIN_23, PIN_22, PIN_21, PIN_20, PIN_19, PIN_18, PIN_17) <= mem_data(7 downto 0);
       end if;
     end if;
   end process;

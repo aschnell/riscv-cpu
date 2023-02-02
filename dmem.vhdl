@@ -11,8 +11,8 @@ use work.probe.all;
 entity dmem is
   port(
     clk:        in std_ulogic;
-    we:         in std_ulogic;                      -- write enable
-    addr:       in std_ulogic_vector(31 downto 0);  -- address
+    we:         in std_ulogic;                            -- write enable
+    addr:       in std_ulogic_vector(XLEN - 1 downto 0);  -- address
     data_in:    in std_ulogic_vector(XLEN - 1 downto 0);  -- data in
     mem_ctl:    in std_ulogic_vector(2 downto 0);
     data_out:   out std_ulogic_vector(XLEN - 1 downto 0)  -- data out
@@ -21,9 +21,17 @@ end;
 
 architecture rtl of dmem is
 
-  type ram_type is array (255 downto 0) of std_ulogic_vector(XLEN - 1 downto 0);
+  type ram_type is array (0 to 63) of std_ulogic_vector(XLEN - 1 downto 0);
 
-  signal ram_data: ram_type := (others => x"00000000");
+  signal ram_data: ram_type := (
+
+                  -- <__global_pointer>:
+    x"6c6c6548",  -- 20000: .word	0x6c6c6548
+    x"6f57206f",  -- 20004: .word	0x6f57206f
+    x"21646c72",  -- 20008: .word	0x21646c72
+
+    others => x"00000000"
+  );
 
 begin
 
@@ -68,6 +76,7 @@ begin
       end if;
     end if;
   end process;
+
 
   process(all) is
 
@@ -132,22 +141,35 @@ begin
 
   end process;
 
-  /*
-  process(clk) is
-  begin
-    if rising_edge(clk) then
-
-      report "mem_ctl:" & to_string(mem_ctl) & " addr:" & to_hstring(addr) & " data_out:" & to_hstring(data_out);
-
-    end if;
-  end process;
-  */
-
   -- rtl_synthesis off
   probe_dmem0 <= ram_data(0);
   probe_dmem1 <= ram_data(1);
   probe_dmem2 <= ram_data(2);
   probe_dmem3 <= ram_data(3);
+  -- rtl_synthesis on
+
+  -- rtl_synthesis off
+  process(clk) is
+
+    variable idx: integer;
+
+  begin
+
+    idx := to_integer(addr(7 downto 2));
+
+    if rising_edge(clk) then
+      if addr(31 downto 8) = x"000100" then
+        report "mem_ctl:" & to_string(mem_ctl) & " addr:" & to_hstring(addr);
+
+        if we = '1' then
+          report "data_in:" & to_hstring(data_in);
+        end if;
+
+        report "data_out:" & to_hstring(data_out);
+      end if;
+    end if;
+
+  end process;
   -- rtl_synthesis on
 
 end architecture rtl;

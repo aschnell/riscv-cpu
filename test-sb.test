@@ -2,6 +2,9 @@
 
 	li	x1, 0x12345678
 	lui	x3, 0x00010
+
+	sw      zero, 4(x3)	# there might be old stuff in the memory
+
 	sb	x1, 6(x3)
 
 -- CHECKS 1

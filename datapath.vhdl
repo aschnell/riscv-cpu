@@ -30,7 +30,7 @@ architecture rtl of datapath is
 
   signal imm:           std_ulogic_vector(31 downto 0);
 
-  signal pc_plus4:      std_ulogic_vector(XLEN - 1 downto 0);
+  signal pc_p4:         std_ulogic_vector(XLEN - 1 downto 0);
   signal pc_jmp1:       std_ulogic_vector(XLEN - 1 downto 0);
   signal pc_jmp2:       std_ulogic_vector(XLEN - 1 downto 0);
   signal pc_next:       std_ulogic_vector(XLEN - 1 downto 0);
@@ -41,8 +41,8 @@ architecture rtl of datapath is
   signal srca:          std_ulogic_vector(XLEN - 1 downto 0);
   signal srcb:          std_ulogic_vector(XLEN - 1 downto 0);
 
-  signal b:             std_ulogic;     -- do the branch
-  signal j:             std_ulogic_vector(1 downto 0);
+  signal branch:        std_ulogic;
+  signal flow:          std_ulogic_vector(1 downto 0);
 
 begin
 
@@ -52,21 +52,24 @@ begin
 
   -- PC logic
 
-  pc_reg: entity work.flopr port map(clk, reset, pc_next, pc);
+  pc_reg: entity work.flopr generic map(d_reset => x"00010000") port map(clk, reset, pc_next, pc);
 
-  pc_adder1: entity work.adder port map(pc, x"00000004", pc_plus4);
+  pc_adder1: entity work.adder port map(pc, x"00000004", pc_p4);
   pc_adder2: entity work.adder port map(pc, imm, pc_jmp1);
   pc_adder3: entity work.adder port map(rs1, imm, pc_jmp2);
 
-  branch_0: entity work.branch port map(clk, rs1, rs2, ctl.branch_ctl, b);
+  branch_0: entity work.branch port map(clk, rs1, rs2, ctl.branch_ctl, branch);
 
-  -- For branch instruction ctl.jmp_ctl is "00" (pc + 4). If the branch is taken
-  -- we override ctl.jmp_ctl to "01" (pc + imm).
-  j <= "01" when b = '1' else ctl.jmp_ctl;
+  process(all) is
+  begin
+    if ctl.pc_ctl = PC_BRANCH then
+      flow <= PC_PCPIMM when branch = '1' else PC_PCP4;
+    else
+      flow <= ctl.pc_ctl;
+    end if;
+  end process;
 
-  -- TODO combine jmp_ctl and a branch bit info a pc_ctl?
-
-  pc_mux: entity work.mux3 port map(pc_plus4, pc_jmp1, pc_jmp2, j, pc_next);
+  pc_mux: entity work.mux3 port map(pc_p4, pc_jmp1, pc_jmp2, flow, pc_next);
 
   -- register logic
 
@@ -74,11 +77,9 @@ begin
     clk, ctl.rd_write, rs1_idx, rs2_idx, rd_idx, rs1, rs2, rd
   );
 
+  -- TODO somehow yosys sees a loop for rd_src
   rd_mux: entity work.mux3 port map(
-    aluout, readdata, pc_plus4,
-    -- TODO somehow yosys sees a loop for rd_src
-    ctl.rd_src,
-    rd
+    aluout, readdata, pc_p4, ctl.rd_src, rd
   );
 
   -- ALU logic
@@ -88,17 +89,17 @@ begin
 
   alu_0: entity work.alu port map(clk, srca, srcb, ctl.alu_ctl, aluout);
 
-  /*
+  -- rtl_synthesis off
   process(clk) is
   begin
     if rising_edge(clk) then
       report "rs1:" & to_string(rs1_idx) & " rs2:" & to_string(rs2_idx) & " rd:" & to_string(rd_idx);
-      -- report "pcjmp1:" & to_hstring(pcjmp1);
-      -- report "pcjmp2:" & to_hstring(pcjmp2);
-      -- report "pctmp:" & to_hstring(pctmp);
-      -- report "pcnext:" & to_hstring(pcnext);
+      report "pc_p4:" & to_hstring(pc_p4);
+      report "pc_jmp1:" & to_hstring(pc_jmp1);
+      report "pc_jmp2:" & to_hstring(pc_jmp2);
+      report "pc_next:" & to_hstring(pc_next);
     end if;
   end process;
-  */
+  -- rtl_synthesis on
 
 end architecture rtl;

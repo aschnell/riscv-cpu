@@ -5,4 +5,6 @@
 
 -- CHECKS 1
 
-rx1 = x"00020004"
+# PC is 0x10000 after reset
+
+x1 = x"00030004"

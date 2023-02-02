@@ -1,8 +1,8 @@
 -- ASM 1
 
-	li	x2, 6
-	li	x3, 7
-	slt	x1, x2, x3
+	li	x2, -7
+	li	x3, -6
+	sltu	x1, x2, x3
 
 -- CHECKS 1
 

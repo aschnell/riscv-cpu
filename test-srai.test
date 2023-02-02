@@ -5,8 +5,8 @@
 
 -- CHECKS 1
 
-rx1 = x"00000064"
-rx2 = x"00000032"
+x1 = x"00000064"
+x2 = x"00000032"
 
 
 -- ASM 2
@@ -16,8 +16,8 @@ rx2 = x"00000032"
 
 -- CHECKS 2
 
-rx1 = x"ffff1234"
-rx2 = x"fffff123"
+x1 = x"ffff1234"
+x2 = x"fffff123"
 
 
 -- ASM 3
@@ -27,8 +27,8 @@ rx2 = x"fffff123"
 
 -- CHECKS 3
 
-rx1 = x"ffff1234"
-rx2 = x"ffff1234"
+x1 = x"ffff1234"
+x2 = x"ffff1234"
 
 
 -- ASM 4
@@ -38,5 +38,5 @@ rx2 = x"ffff1234"
 
 -- CHECKS 4
 
-rx1 = x"ffff1234"
-rx2 = x"ffffffff"
+x1 = x"ffff1234"
+x2 = x"ffffffff"

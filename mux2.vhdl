@@ -14,6 +14,7 @@ end;
 
 architecture rtl of mux2 is
 begin
+
   y <= d1 when s else
        d0;
 

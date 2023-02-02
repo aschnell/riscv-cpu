@@ -7,7 +7,7 @@ entity branch is
   port(
     clk:        in  std_ulogic;
     a, b:       in  std_ulogic_vector(XLEN - 1 downto 0);
-    cmp_ctl:    in  std_ulogic_vector(2 downto 0);
+    branch_ctl: in  std_ulogic_vector(2 downto 0);
     result:     out std_ulogic
   );
 end;
@@ -17,12 +17,10 @@ begin
 
   process(all) is
   begin
-    case cmp_ctl is
+    case branch_ctl is
 
       when BRANCH_EQ => result <= '1' when a = b else '0';
       when BRANCH_NE => result <= '1' when a /= b else '0';
-
-      when BRANCH_NEVER => result <= '0';
 
       when BRANCH_LT => result <= '1' when signed(a) < signed(b) else '0';
       when BRANCH_GE => result <= '1' when signed(a) >= signed(b) else '0';
@@ -35,15 +33,15 @@ begin
     end case;
   end process;
 
-  /*
+  -- rtl_synthesis off
   process(clk) is
   begin
     if rising_edge(clk) then
-      report "cmp_ctl:" & to_string(cmp_ctl);
+      report "branch_ctl:" & to_string(branch_ctl);
       report "a:" & to_string(a) & " b:" & to_string(b);
       report "result:" & to_string(result);
     end if;
   end process;
-  */
+  -- rtl_synthesis on
 
 end architecture rtl;

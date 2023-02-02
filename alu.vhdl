@@ -14,7 +14,7 @@ entity alu is
 end;
 
 
--- TODO optimize for negative
+-- TODO optimize
 
 architecture rtl of alu is
 begin
@@ -38,17 +38,16 @@ begin
       when ALU_A   => result <= a;
       when ALU_B   => result <= b;
 
-      when ALU_SLT => result <= std_logic_vector(to_signed(1, XLEN)) when a < b else
-                                std_logic_vector(to_signed(0, XLEN));
-
-      when ALU_SLTU => result <= std_logic_vector(to_unsigned(1, XLEN)) when a < b else
-                                 std_logic_vector(to_unsigned(0, XLEN));
+      when ALU_SLT => result <= x"00000001" when signed(a) < signed(b) else x"00000000";
+      when ALU_SLTU => result <= x"00000001" when unsigned(a) < unsigned(b) else x"00000000";
 
       when others => result <= (others => 'X');
 
     end case;
+
   end process;
 
+  -- rtl_synthesis off
   process(clk) is
   begin
     if rising_edge(clk) then
@@ -58,5 +57,6 @@ begin
 
     end if;
   end process;
+  -- rtl_synthesis on
 
 end architecture rtl;
