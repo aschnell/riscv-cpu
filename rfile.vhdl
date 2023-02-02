@@ -41,6 +41,8 @@ begin
 
   -- no special dealing for x0 during read is faster
 
+  -- iCE40 BRAM is not used here; AFAIS has to be synchronous read and write for that
+
   data1_out <= ram_data(to_integer(addr1));
   data2_out <= ram_data(to_integer(addr2));
 
