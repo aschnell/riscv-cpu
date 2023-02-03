@@ -4,11 +4,13 @@ riscv64-elf-gcc -march=rv32i -mabi=ilp32 -c -o startup.o startup.s
 
 
 riscv64-elf-as -march=rv32i -mabi=ilp32 count1.s -o count1.o
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count1.o | ./o2vhdl.py > count1.vhdl
+riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o count1.elf count1.o
+riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count1.elf | ./o2vhdl.py > count1.vhdl
 
 
 riscv64-elf-as -march=rv32i -mabi=ilp32 count2.s -o count2.o
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count2.o | ./o2vhdl.py > count2.vhdl
+riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o count2.elf count2.o
+riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count2.elf | ./o2vhdl.py > count2.vhdl
 
 
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -ffreestanding -c -o count3.o count3.c -O2 -save-temps

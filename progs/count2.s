@@ -5,8 +5,8 @@ l0:
 	li	t2, 0x00080000
 
 l1:
-	# call function
-	jal	l3
+	# call function l3
+	call	l3
 
 	# 16 MHz -> 4000000 cycles for 2 instrustions loop @ 2 Hz
 	li	t0, 4000000
