@@ -1,0 +1,9 @@
+*.i
+*.o
+*.elf
+*.vhdl
+*.hex
+count3.s
+hello1.s
+hello2.s
+hello3.s
