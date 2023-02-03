@@ -25,15 +25,25 @@ architecture rtl of dmem is
 
   signal ram_data: ram_type := (
 
-                  -- <__global_pointer>:
-    x"6c6c6548",  -- 20000: .word	0x6c6c6548
-    x"6f57206f",  -- 20004: .word	0x6f57206f
-    x"21646c72",  -- 20008: .word	0x21646c72
+    -- hello3.c
+
+    -- switch
+    x"3f000040", x"664f5b06", x"7f077d6d", x"0000006f",
+    x"00000000", x"00000000", x"76000079", x"38000000",
+    x"003f0000", x"006d0000", x"0000003e",
+
+    -- string
+    x"4c4c4548", x"5553204f", x"2d204553", x"32313020",
+    x"36353433", x"20393837", x"0000202d",
 
     others => x"00000000"
   );
 
 begin
+
+  -- TODO Add a memory controller that accesses the real memory in a
+  -- normal way, likely with a write mask for byte and half word
+  -- writes.
 
   process(clk) is
 

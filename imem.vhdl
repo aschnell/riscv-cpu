@@ -23,54 +23,68 @@ architecture rtl of imem is
 
   signal ram_data: ram_type := (
 
+    -- hello3.c
+
                   -- <__reset>:
     x"00010197",  -- 10000: auipc	gp,0x10
-    x"00018193",  -- 10004: mv	gp,gp
-    x"00020117",  -- 10008: auipc	sp,0x20
-    x"10410113",  -- 1000c: addi	sp,sp,260 # 3010c <__stack_pointer>
+    x"02918193",  -- 10004: addi	gp,gp,41 # 20029 <__global_pointer>
+    x"00010117",  -- 10008: auipc	sp,0x10
+    x"0e810113",  -- 1000c: addi	sp,sp,232 # 200f0 <__stack_pointer>
     x"00010297",  -- 10010: auipc	t0,0x10
-    x"ffd28293",  -- 10014: addi	t0,t0,-3 # 2000d <__bss_end>
+    x"03728293",  -- 10014: addi	t0,t0,55 # 20047 <__bss_end>
     x"00010317",  -- 10018: auipc	t1,0x10
-    x"ff530313",  -- 1001c: addi	t1,t1,-11 # 2000d <__bss_end>
+    x"02f30313",  -- 1001c: addi	t1,t1,47 # 20047 <__bss_end>
     x"0062f863",  -- 10020: bgeu	t0,t1,10030 <memclr_done>
                   -- <memclr>:
     x"0002a023",  -- 10024: sw	zero,0(t0)
     x"00428293",  -- 10028: addi	t0,t0,4
     x"fe62ece3",  -- 1002c: bltu	t0,t1,10024 <memclr>
                   -- <memclr_done>:
-    x"068000ef",  -- 10030: jal	ra,10098 <__text_end>
+    x"094000ef",  -- 10030: jal	ra,100c4 <__text_end>
     x"0000006f",  -- 10034: j	10034 <memclr_done+0x4>
                   -- <sleep>:
-    x"007a1737",  -- 10038: lui	a4,0x7a1
-    x"00000793",  -- 1003c: li	a5,0
-    x"20070713",  -- 10040: addi	a4,a4,512 # 7a1200 <__stack_pointer+0x7710f4>
-    x"00178793",  -- 10044: addi	a5,a5,1
-    x"fee79ee3",  -- 10048: bne	a5,a4,10044 <sleep+0xc>
-    x"00008067",  -- 1004c: ret
+    x"007a17b7",  -- 10038: lui	a5,0x7a1
+    x"20078793",  -- 1003c: addi	a5,a5,512 # 7a1200 <__stack_pointer+0x781110>
+    x"fff78793",  -- 10040: addi	a5,a5,-1
+    x"fe079ee3",  -- 10044: bnez	a5,10040 <sleep+0x8>
+    x"00008067",  -- 10048: ret
+                  -- <lut>:
+    x"fd350513",  -- 1004c: addi	a0,a0,-45
+    x"0ff57513",  -- 10050: zext.b	a0,a0
+    x"02800793",  -- 10054: li	a5,40
+    x"00a7ec63",  -- 10058: bltu	a5,a0,10070 <lut+0x24>
+    x"000207b7",  -- 1005c: lui	a5,0x20
+    x"00078793",  -- 10060: mv	a5,a5
+    x"00a787b3",  -- 10064: add	a5,a5,a0
+    x"0007c503",  -- 10068: lbu	a0,0(a5) # 20000 <CSWTCH.3>
+    x"00008067",  -- 1006c: ret
+    x"00000513",  -- 10070: li	a0,0
+    x"00008067",  -- 10074: ret
                   -- <print.constprop.0>:
-    x"ff010113",  -- 10050: addi	sp,sp,-16
-    x"00812423",  -- 10054: sw	s0,8(sp)
-    x"00020437",  -- 10058: lui	s0,0x20
-    x"00912223",  -- 1005c: sw	s1,4(sp)
-    x"00112623",  -- 10060: sw	ra,12(sp)
-    x"04800793",  -- 10064: li	a5,72
-    x"00040413",  -- 10068: mv	s0,s0
-    x"000804b7",  -- 1006c: lui	s1,0x80
-    x"00f480a3",  -- 10070: sb	a5,1(s1) # 80001 <__stack_pointer+0x4fef5>
-    x"00140413",  -- 10074: addi	s0,s0,1 # 20001 <__global_pointer+0x1>
-    x"fc1ff0ef",  -- 10078: jal	ra,10038 <sleep>
-    x"00044783",  -- 1007c: lbu	a5,0(s0)
-    x"fe0798e3",  -- 10080: bnez	a5,10070 <print.constprop.0+0x20>
-    x"00c12083",  -- 10084: lw	ra,12(sp)
-    x"00812403",  -- 10088: lw	s0,8(sp)
-    x"00412483",  -- 1008c: lw	s1,4(sp)
-    x"01010113",  -- 10090: addi	sp,sp,16
-    x"00008067",  -- 10094: ret
+    x"ff010113",  -- 10078: addi	sp,sp,-16
+    x"00812423",  -- 1007c: sw	s0,8(sp)
+    x"00020437",  -- 10080: lui	s0,0x20
+    x"00912223",  -- 10084: sw	s1,4(sp)
+    x"00112623",  -- 10088: sw	ra,12(sp)
+    x"04800513",  -- 1008c: li	a0,72
+    x"02c40413",  -- 10090: addi	s0,s0,44 # 2002c <__global_pointer+0x3>
+    x"000804b7",  -- 10094: lui	s1,0x80
+    x"fb5ff0ef",  -- 10098: jal	ra,1004c <lut>
+    x"00a480a3",  -- 1009c: sb	a0,1(s1) # 80001 <__stack_pointer+0x5ff11>
+    x"00140413",  -- 100a0: addi	s0,s0,1
+    x"f95ff0ef",  -- 100a4: jal	ra,10038 <sleep>
+    x"00044503",  -- 100a8: lbu	a0,0(s0)
+    x"fe0516e3",  -- 100ac: bnez	a0,10098 <print.constprop.0+0x20>
+    x"00c12083",  -- 100b0: lw	ra,12(sp)
+    x"00812403",  -- 100b4: lw	s0,8(sp)
+    x"00412483",  -- 100b8: lw	s1,4(sp)
+    x"01010113",  -- 100bc: addi	sp,sp,16
+    x"00008067",  -- 100c0: ret
                   -- <main>:
-    x"ff010113",  -- 10098: addi	sp,sp,-16
-    x"00112623",  -- 1009c: sw	ra,12(sp)
-    x"fb1ff0ef",  -- 100a0: jal	ra,10050 <print.constprop.0>
-    x"ffdff06f",  -- 100a4: j	100a0 <main+0x8>
+    x"ff010113",  -- 100c4: addi	sp,sp,-16
+    x"00112623",  -- 100c8: sw	ra,12(sp)
+    x"fadff0ef",  -- 100cc: jal	ra,10078 <print.constprop.0>
+    x"ffdff06f",  -- 100d0: j	100cc <main+0x8>
 
     others => x"00000000"
   );
