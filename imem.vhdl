@@ -117,19 +117,6 @@ begin
     end if;
   end process;
 
-  /*
-  process(clk) is
-  begin
-    if rising_edge(clk) then
-
-      if re then
-        data_out <= ram_data(to_integer(addr));
-      end if;
-
-    end if;
-  end process;
-  */
-
   -- rtl_synthesis off
   probe_instr <= data_out;
   -- rtl_synthesis on

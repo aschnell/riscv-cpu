@@ -38,14 +38,5 @@ for name in test-*.test ; do
     ./run-test.py ${name}
 done
 
-exit 0
+# ghdl -r --std=08 top_tb --wave=top-tb.ghw > /dev/null
 
-ghdl -r --std=08 top_tb --wave=top-tb.ghw > /dev/null
-
-yosys -m ghdl -p 'ghdl --std=08 top; synth_ice40 -json hardware.json'
-
-nextpnr-ice40 --lp8k --package cm81 --json hardware.json --asc hardware.asc --pcf pins.pcf --freq 16.0
-
-# icetime -d lp8k hardware.asc
-
-icepack hardware.asc hardware.bin
