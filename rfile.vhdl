@@ -41,7 +41,12 @@ begin
 
   -- no special dealing for x0 during read is faster
 
-  -- iCE40 BRAM is not used here; AFAIS has to be synchronous read and write for that
+  -- Unfortunately iCE40 BRAM is not used here - it has to be
+  -- synchronous read and write for that; when doing so it uses 4
+  -- BRAMs, not 1: 2x since BRAM is only 16 bits width and again 2x
+  -- since BRAM is only two-port but here it is needed three-port, so
+  -- likely yosys keeps the data twice in BRAMs (which is kind of cool
+  -- by yosys).
 
   data1_out <= ram_data(to_integer(addr1));
   data2_out <= ram_data(to_integer(addr2));

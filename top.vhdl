@@ -49,7 +49,7 @@ begin
     end if;
   end process;
 
-  -- handle "IO mapped device"
+  -- handle memory-mapped I/O devices
   process(CLK) is
   begin
     if rising_edge(CLK) then

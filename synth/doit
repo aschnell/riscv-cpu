@@ -1,0 +1,40 @@
+#!/bin/bash -xe
+
+for name in adder flopr mux2 mux3 common alu branch imm rfile imem dmem controller datapath core soc top ; do
+    ./pmpp.py ../${name}.vhdl > ${name}.vhdl
+done
+
+ghdl -a --std=08 common.vhdl
+
+ghdl -a --std=08 adder.vhdl
+ghdl -a --std=08 flopr.vhdl
+ghdl -a --std=08 mux2.vhdl
+ghdl -a --std=08 mux3.vhdl
+
+ghdl -a --std=08 alu.vhdl
+
+ghdl -a --std=08 branch.vhdl
+
+ghdl -a --std=08 imm.vhdl
+
+ghdl -a --std=08 rfile.vhdl
+
+ghdl -a --std=08 imem.vhdl
+ghdl -a --std=08 dmem.vhdl
+
+ghdl -a --std=08 controller.vhdl
+ghdl -a --std=08 datapath.vhdl
+
+ghdl -a --std=08 core.vhdl
+
+ghdl -a --std=08 soc.vhdl
+
+ghdl -a --std=08 top.vhdl
+
+yosys -m ghdl -p 'ghdl --std=08 top; synth_ice40 -json hardware.json'
+
+nextpnr-ice40 --lp8k --package cm81 --json hardware.json --asc hardware.asc --pcf pins.pcf --freq 16.0
+
+icetime -d lp8k hardware.asc
+
+icepack hardware.asc hardware.bin
