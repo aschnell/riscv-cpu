@@ -35,7 +35,7 @@ SECTIONS
 
     .stack : {
         __stack_start = .;
-	  . = 0x00070; /* relative (within braces?) */
+	  . = 0x00080; /* relative (within braces?) */
         __stack_pointer = .;
     }
 }

@@ -15,7 +15,8 @@ Memory Layout:
 "In the standard RISC-V calling convention, the stack grows downward
 and the stack pointer is always kept 16-byte aligned."
 
-So the stack could span from 0x00020080 to 0x000200f0.
+So the stack could span from 0x00020080 to 0x000200ff. __stack_pointer
+can be set to 0x00020100 since 0x00020100 itself is not used.
 
 TODO Can I tell gcc to only use 4-byte alignment?
 

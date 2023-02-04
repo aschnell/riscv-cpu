@@ -29,7 +29,7 @@ architecture rtl of imem is
     x"00010197",  -- 10000: auipc	gp,0x10
     x"02918193",  -- 10004: addi	gp,gp,41 # 20029 <__global_pointer>
     x"00010117",  -- 10008: auipc	sp,0x10
-    x"0e810113",  -- 1000c: addi	sp,sp,232 # 200f0 <__stack_pointer>
+    x"0f810113",  -- 1000c: addi	sp,sp,248 # 20100 <__stack_pointer>
     x"00010297",  -- 10010: auipc	t0,0x10
     x"03728293",  -- 10014: addi	t0,t0,55 # 20047 <__bss_end>
     x"00010317",  -- 10018: auipc	t1,0x10
@@ -44,7 +44,7 @@ architecture rtl of imem is
     x"0000006f",  -- 10034: j	10034 <memclr_done+0x4>
                   -- <sleep>:
     x"007a17b7",  -- 10038: lui	a5,0x7a1
-    x"20078793",  -- 1003c: addi	a5,a5,512 # 7a1200 <__stack_pointer+0x781110>
+    x"20078793",  -- 1003c: addi	a5,a5,512 # 7a1200 <__stack_pointer+0x781100>
     x"fff78793",  -- 10040: addi	a5,a5,-1
     x"fe079ee3",  -- 10044: bnez	a5,10040 <sleep+0x8>
     x"00008067",  -- 10048: ret
@@ -70,7 +70,7 @@ architecture rtl of imem is
     x"02c40413",  -- 10090: addi	s0,s0,44 # 2002c <__global_pointer+0x3>
     x"000804b7",  -- 10094: lui	s1,0x80
     x"fb5ff0ef",  -- 10098: jal	ra,1004c <lut>
-    x"00a480a3",  -- 1009c: sb	a0,1(s1) # 80001 <__stack_pointer+0x5ff11>
+    x"00a480a3",  -- 1009c: sb	a0,1(s1) # 80001 <__stack_pointer+0x5ff01>
     x"00140413",  -- 100a0: addi	s0,s0,1
     x"f95ff0ef",  -- 100a4: jal	ra,10038 <sleep>
     x"00044503",  -- 100a8: lbu	a0,0(s0)
