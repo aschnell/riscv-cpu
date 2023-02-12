@@ -5,38 +5,34 @@ riscv64-elf-gcc -march=rv32i -mabi=ilp32 -c -o startup.o startup.s
 
 riscv64-elf-as -march=rv32i -mabi=ilp32 count1.s -o count1.o
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o count1.elf count1.o
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count1.elf | ./o2vhdl.py > count1.vhdl
+riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count1.elf | ./o2vhdl.py > count1-imem.vhdl
 
 
 riscv64-elf-as -march=rv32i -mabi=ilp32 count2.s -o count2.o
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o count2.elf count2.o
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count2.elf | ./o2vhdl.py > count2.vhdl
+riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count2.elf | ./o2vhdl.py > count2-imem.vhdl
 
 
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -ffreestanding -c -o count3.o count3.c -O2 -save-temps
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o count3.elf count3.o startup.o
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count3.elf | ./o2vhdl.py>  count3.vhdl
+riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv count3.elf | ./o2vhdl.py>  count3-imem.vhdl
 
 
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -ffreestanding -c -o hello1.o hello1.c -O2 -save-temps -fno-inline
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o hello1.elf hello1.o startup.o
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv hello1.elf | ./o2vhdl.py > hello1.vhdl
-
-
-# TODO generate hello*-dmem.vhdl from hex
+riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv hello1.elf | ./o2vhdl.py > hello1-imem.vhdl
 
 
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -ffreestanding -c -o hello2.o hello2.c -O2 -save-temps -fno-inline
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o hello2.elf hello2.o startup.o
 riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv hello2.elf | ./o2vhdl.py > hello2-imem.vhdl
-riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble --section .rodata.str1.4 -m riscv hello2.elf | ./o2vhdl.py > hello2-dmem.vhdl
+riscv64-elf-objcopy -O ihex hello2.elf hello2.hex
+./hex2vhdl.py hello2.hex --data > hello2-dmem.vhdl
 
 
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -ffreestanding -c -o hello3.o hello3.c -O2 -save-temps -fno-inline
 riscv64-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T gcc-ls.ld -o hello3.elf hello3.o startup.o
 riscv64-elf-objdump -march=rv32i -mabi=ilp32 --disassemble -m riscv hello3.elf | ./o2vhdl.py > hello3-imem.vhdl
-riscv64-elf-readelf --hex-dump .rodata hello3.elf
-riscv64-elf-readelf --hex-dump .rodata.str1.4 hello3.elf
 riscv64-elf-objcopy -O ihex hello3.elf hello3.hex
-hex2dump.py --range=20000:200ff hello3.hex
+./hex2vhdl.py hello3.hex --data > hello3-dmem.vhdl
 
