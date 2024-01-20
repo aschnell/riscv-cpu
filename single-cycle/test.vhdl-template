@@ -39,7 +39,7 @@ $instructions
       report "instr:" & to_hstring(probe_instr);
       exit when probe_instr = x"0100000F"; -- pause
       if now > 10000 ns then
-        report "infinit loop (?)" severity failure;
+        report "infinite loop (?)" severity failure;
       end if;
     end loop;
 
