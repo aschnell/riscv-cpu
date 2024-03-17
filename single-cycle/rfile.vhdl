@@ -12,6 +12,7 @@ use work.probe.all;
 entity rfile is
   port(
     clk:        in  std_ulogic;
+    reset:      in  std_ulogic;
     we3:        in  std_ulogic;
     addr1:      in  std_ulogic_vector(4 downto 0);
     addr2:      in  std_ulogic_vector(4 downto 0);
@@ -30,13 +31,29 @@ architecture rtl of rfile is
 
 begin
 
-  process(clk) is
+  process(clk, reset) is
   begin
-    if rising_edge(clk) then
-      if we3 = '1' and addr3 /= 0 then
-        ram_data(to_integer(addr3)) <= data3_in;
+
+    if reset then
+
+      -- rtl_synthesis off
+      if probe_fake = '1' then
+        ram_data(1) <= probe_in_x1;
+        ram_data(2) <= probe_in_x2;
+        ram_data(3) <= probe_in_x3;
       end if;
+      -- rtl_synthesis on
+
+    else
+
+      if rising_edge(clk) then
+        if we3 = '1' and addr3 /= 0 then
+          ram_data(to_integer(addr3)) <= data3_in;
+        end if;
+      end if;
+
     end if;
+
   end process;
 
   -- no special dealing for x0 during read is faster
@@ -52,9 +69,9 @@ begin
   data2_out <= ram_data(to_integer(addr2));
 
   -- rtl_synthesis off
-  probe_x1 <= ram_data(1);
-  probe_x2 <= ram_data(2);
-  probe_x3 <= ram_data(3);
+  probe_out_x1 <= ram_data(1);
+  probe_out_x2 <= ram_data(2);
+  probe_out_x3 <= ram_data(3);
   -- rtl_synthesis on
 
   -- rtl_synthesis off

@@ -1,8 +1,10 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	li	x2, 7
 	slti	x1, x2, 8
 
--- CHECKS 1
+-- CHECK
 
 x1 = x"00000001"

@@ -11,6 +11,7 @@ use work.probe.all;
 entity dmem is
   port(
     clk:        in  std_ulogic;
+    reset:      in  std_ulogic;
     we:         in  std_ulogic;                           -- write enable
     addr:       in  std_ulogic_vector(XLEN - 1 downto 0); -- address
     data_in:    in  std_ulogic_vector(XLEN - 1 downto 0); -- data in
@@ -55,48 +56,63 @@ begin
   -- normal way, likely with a write mask for byte and half word
   -- writes.
 
-  process(clk) is
+  process(clk, reset) is
 
     variable idx: integer;
 
   begin
 
-    idx := to_integer(addr(7 downto 2));
+    if reset then
 
-    if rising_edge(clk) then
-      if addr(31 downto 8) = x"000100" and we = '1' then
-
-        report "mem_ctl:" & to_string(mem_ctl) & " dmem" & to_string(idx) & ":" & to_hstring(data_in);
-
-        case mem_ctl is
-
-          when MEM_1B =>
-            case addr(1 downto 0) is
-              when "00" => ram_data(idx)(7 downto 0) <= data_in(7 downto 0);
-              when "01" => ram_data(idx)(15 downto 8) <= data_in(7 downto 0);
-              when "10" => ram_data(idx)(23 downto 16) <= data_in(7 downto 0);
-              when "11" => ram_data(idx)(31 downto 24) <= data_in(7 downto 0);
-              when others =>
-            end case;
-
-          when MEM_2B =>
-            case addr(1) is
-              when '0' => ram_data(idx)(15 downto 0) <= data_in(15 downto 0);
-              when '1' => ram_data(idx)(31 downto 16) <= data_in(15 downto 0);
-              when others =>
-            end case;
-
-          when MEM_4B =>
-            ram_data(idx) <= data_in;
-
-          when others =>
-
-        end case;
-
+      -- rtl_synthesis off
+      if probe_fake = '1' then
+        ram_data(0) <= probe_in_dmem0;
+        ram_data(1) <= probe_in_dmem1;
+        ram_data(2) <= probe_in_dmem2;
+        ram_data(3) <= probe_in_dmem3;
       end if;
-    end if;
-  end process;
+      -- rtl_synthesis on
 
+    else
+
+      idx := to_integer(addr(7 downto 2));
+
+      if rising_edge(clk) then
+        if addr(31 downto 8) = x"000100" and we = '1' then
+
+          report "mem_ctl:" & to_string(mem_ctl) & " dmem" & to_string(idx) & ":" & to_hstring(data_in);
+
+          case mem_ctl is
+
+            when MEM_1B =>
+              case addr(1 downto 0) is
+                when "00" => ram_data(idx)(7 downto 0) <= data_in(7 downto 0);
+                when "01" => ram_data(idx)(15 downto 8) <= data_in(7 downto 0);
+                when "10" => ram_data(idx)(23 downto 16) <= data_in(7 downto 0);
+                when "11" => ram_data(idx)(31 downto 24) <= data_in(7 downto 0);
+                when others =>
+              end case;
+
+            when MEM_2B =>
+              case addr(1) is
+                when '0' => ram_data(idx)(15 downto 0) <= data_in(15 downto 0);
+                when '1' => ram_data(idx)(31 downto 16) <= data_in(15 downto 0);
+                when others =>
+              end case;
+
+            when MEM_4B =>
+              ram_data(idx) <= data_in;
+
+            when others =>
+
+          end case;
+
+        end if;
+      end if;
+
+    end if;
+
+  end process;
 
   process(all) is
 
@@ -162,10 +178,10 @@ begin
   end process;
 
   -- rtl_synthesis off
-  probe_dmem0 <= ram_data(0);
-  probe_dmem1 <= ram_data(1);
-  probe_dmem2 <= ram_data(2);
-  probe_dmem3 <= ram_data(3);
+  probe_out_dmem0 <= ram_data(0);
+  probe_out_dmem1 <= ram_data(1);
+  probe_out_dmem2 <= ram_data(2);
+  probe_out_dmem3 <= ram_data(3);
   -- rtl_synthesis on
 
   -- rtl_synthesis off

@@ -1,9 +1,27 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	addi	x2, x0, 0x22
 	addi	x3, x0, 0x44
 	add	x1, x2, x3
 
--- CHECKS 1
+-- CHECK
 
 x1 = x"00000066"
+
+
+***** TEST *****
+
+-- SETUP
+
+x1 <= x"12345678"
+x2 <= x"87654321"
+
+-- ASM
+
+	add x3, x1, x2
+
+-- CHECK
+
+x3 = x"99999999"

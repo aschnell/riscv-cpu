@@ -1,4 +1,6 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 l0:
 	nop
@@ -6,7 +8,7 @@ l0:
 	li	x2, 0xff
 l1:
 
--- CHECKS 1
+-- CHECK
 
 # reset sets PC to 0x10000
 

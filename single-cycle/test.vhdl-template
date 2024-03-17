@@ -13,9 +13,11 @@ architecture testbench of tmp is
 
 begin
 
-  probe_fake_imem <= '1';
+  probe_fake <= '1';
 
-$instructions
+$setup
+
+$asm
 
   dut: entity work.soc port map(clk, reset);
 
@@ -36,23 +38,23 @@ $instructions
       clk <= '0';
       wait for 50 ns;
 
-      report "instr:" & to_hstring(probe_instr);
-      exit when probe_instr = x"0100000F"; -- pause
+      report "instr:" & to_hstring(probe_out_instr);
+      exit when probe_out_instr = x"0100000F"; -- pause
       if now > 10000 ns then
         report "infinite loop (?)" severity failure;
       end if;
     end loop;
 
-    report "x1:" & to_hstring(probe_x1);
-    report "x2:" & to_hstring(probe_x2);
-    report "x3:" & to_hstring(probe_x3);
+    report "x1:" & to_hstring(probe_out_x1);
+    report "x2:" & to_hstring(probe_out_x2);
+    report "x3:" & to_hstring(probe_out_x3);
 
-    report "dmem0:" & to_hstring(probe_dmem0);
-    report "dmem1:" & to_hstring(probe_dmem1);
-    report "dmem2:" & to_hstring(probe_dmem2);
-    report "dmem3:" & to_hstring(probe_dmem3);
+    report "dmem0:" & to_hstring(probe_out_dmem0);
+    report "dmem1:" & to_hstring(probe_out_dmem1);
+    report "dmem2:" & to_hstring(probe_out_dmem2);
+    report "dmem3:" & to_hstring(probe_out_dmem3);
 
-$checks
+$check
 
     report "test succeeded";
     finish;

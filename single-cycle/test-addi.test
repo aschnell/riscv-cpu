@@ -1,26 +1,32 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	addi	x1, x0, 0x678
 
--- CHECKS 1
+-- CHECK
 
 x1 = x"00000678"
 
 
--- ASM 2
+***** TEST *****
+
+-- ASM
 
 	addi	x1, x0, -1
 
--- CHECKS 2
+-- CHECK
 
 x1 = x"ffffffff"
 
 
--- ASM 3
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0x20
 	addi	x1, x1, 0x34
 
--- CHECKS 3
+-- CHECK
 
 x1 = x"00000054"

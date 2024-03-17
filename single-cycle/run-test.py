@@ -9,16 +9,17 @@ from string import Template
 
 class Test:
 
-    def __init__(self, asm, checks):
+    def __init__(self, setup, asm, check):
 
         if not asm:
             raise RuntimeError("empty ASM")
 
-        if not checks:
-            raise RuntimeError("empty CHECKS")
+        if not check:
+            raise RuntimeError("empty CHECK")
 
+        self.setup = setup
         self.asm = asm
-        self.checks = checks
+        self.check = check
 
         self.asm.append("")
         self.asm.append("\tpause")
@@ -26,17 +27,20 @@ class Test:
 
 def load_tests():
 
-    rx1 = re.compile("^-- ASM ([0-9]+)$")
-    rx2 = re.compile("^-- CHECKS ([0-9]+)$")
+    rx0 = re.compile("^\*\*\*\*\* TEST \*\*\*\*\*$")
+    rx1 = re.compile("^-- SETUP$")
+    rx2 = re.compile("^-- ASM$")
+    rx3 = re.compile("^-- CHECK$")
 
-    Stage = Enum('Stage', ['NONE', 'ASM', 'CHECKS'])
+    Stage = Enum('Stage', ['NONE', 'TEST', 'SETUP', 'ASM', 'CHECK'])
 
     tests = []
 
     stage = Stage.NONE
 
+    setup = []
     asm = []
-    checks = []
+    check = []
 
     for line in fileinput.input():
         line = line.rstrip()
@@ -44,25 +48,37 @@ def load_tests():
         if not line or line.startswith("#"):
             continue
 
+        if rx0.match(line):
+            if stage != Stage.NONE:
+                tests.append(Test(setup, asm, check))
+            setup = []
+            asm = []
+            check = []
+            stage = Stage.TEST
+            continue
+
         if rx1.match(line):
-            if stage == Stage.CHECKS:
-                tests.append(Test(asm, checks))
-                asm = []
-                checks = []
-            stage = Stage.ASM
+            stage = Stage.SETUP
             continue
 
         if rx2.match(line):
-            stage = Stage.CHECKS
+            stage = Stage.ASM
             continue
+
+        if rx3.match(line):
+            stage = Stage.CHECK
+            continue
+
+        if stage == Stage.SETUP:
+            setup.append(line)
 
         if stage == Stage.ASM:
             asm.append(line)
 
-        if stage == Stage.CHECKS:
-            checks.append(line)
+        if stage == Stage.CHECK:
+            check.append(line)
 
-    tests.append(Test(asm, checks))
+    tests.append(Test(setup, asm, check))
 
     return tests
 
@@ -83,6 +99,11 @@ def run_as(test):
 
 def write_vhdl(test):
 
+    setup = []
+
+    for t in test.setup:
+        setup.append('  probe_in_{0};'.format(t))
+
     cmd = ["riscv64-elf-objdump", "-march=rv32i", "-mabi=ilp32", "--disassemble", "-m", "riscv", "tmp.o"]
     popen = subprocess.Popen(cmd, stdout = subprocess.PIPE, universal_newlines = True)
 
@@ -101,33 +122,33 @@ def write_vhdl(test):
     rx1 = re.compile("^ +([0-9a-f]+):[ \t]+([0-9a-f]{8}) [ \t]+(.+)$")
     rx2 = re.compile("^([0-9a0-f]{8}) (<.+>):$")
 
-    instructions = []
-    num_instructions = 0
+    asm = []
+    num_asm = 0
 
     for line in machine_code:
 
         m = rx1.match(line)
         if m:
-            instructions.append("  probe_imem{0} <= x\"{1}\"; -- {2: >4}: {3} ".format(num_instructions, m[2], m[1], m[3]))
-            num_instructions += 1
+            asm.append("  probe_in_imem{0} <= x\"{1}\"; -- {2: >4}: {3} ".format(num_asm, m[2], m[1], m[3]))
+            num_asm += 1
 
         m = rx2.match(line)
         if m:
-            instructions.append("                              -- {1}:".format(m[1], m[2]))
+            asm.append("                              -- {1}:".format(m[1], m[2]))
 
-    checks = []
+    check = []
 
-    for t in test.checks:
-        checks.append('    if not(probe_{0}) then'.format(t))
-        checks.append('      report "test failed" severity failure;')
-        checks.append('    end if;')
+    for t in test.check:
+        check.append('    if not(probe_out_{0}) then'.format(t))
+        check.append('      report "test failed" severity failure;')
+        check.append('    end if;')
 
     with open('test.vhdl-template') as f:
         template = f.readlines()
 
     form = Template("".join(template))
 
-    w = { 'instructions': "\n".join(instructions), "checks": "\n".join(checks) }
+    w = { 'setup': "\n".join(setup), 'asm': "\n".join(asm), 'check': "\n".join(check) }
 
     with open('tmp.vhdl', 'w') as f:
         f.write(form.substitute(w))

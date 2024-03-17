@@ -1,9 +1,11 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0x12345678
 	li	x2, 0xff00ff00
 	and	x3, x1, x2
 
--- CHECKS 1
+-- CHECK
 
 x3 = x"12005600"

@@ -1,10 +1,28 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	lui	x1, 0x12345
 	addi	x1, x1, 0x678
 	lui	x3, 0x00010
 	sw	x1, 4(x3)
 
--- CHECKS 1
+-- CHECK
+
+dmem1 = x"12345678"
+
+
+***** TEST *****
+
+-- SETUP
+
+x1 <= x"12345678"
+x2 <= x"00010008"
+
+-- ASM
+
+	sw	x1, -4(x2)
+
+-- CHECK
 
 dmem1 = x"12345678"

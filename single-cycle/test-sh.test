@@ -1,4 +1,6 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	lui	x1, 0x12345
 	addi	x1, x1, 0x678
@@ -8,6 +10,6 @@
 
 	sh	x1, 6(x3)
 
--- CHECKS 1
+-- CHECK
 
 dmem1 = x"56780000"

@@ -58,7 +58,7 @@ begin
                 alu_srcb => ALU_SRCB_RS2, pc_ctl => PC_PCP4, branch_ctl => BRANCH_NONE);
 
       when OPCODE_LOAD =>
-        -- lb, lb, lw, lbu, lhu
+        -- lb, lh, lw, lbu, lhu
         ctl <= (rd_write => '1', rd_src => RD_SRC_MEM, mem_write => '0', mem_ctl => funct3,
                 imm_ctl => IMM_I, alu_ctl => ALU_ADD, alu_srca => ALU_SRCA_RS1,
                 alu_srcb => ALU_SRCB_IMM, pc_ctl => PC_PCP4, branch_ctl => BRANCH_NONE);

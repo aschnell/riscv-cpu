@@ -1,4 +1,6 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 l0:
 	li	x2, 5
@@ -8,12 +10,14 @@ l0:
 l1:
 	nop
 
--- CHECKS 1
+-- CHECK
 
 x1 = x"00000000"
 
 
--- ASM 2
+***** TEST *****
+
+-- ASM
 
 l0:
 	li	x2, 5
@@ -23,6 +27,6 @@ l0:
 l1:
 	nop
 
--- CHECKS 2
+-- CHECK
 
 x1 = x"00000009"

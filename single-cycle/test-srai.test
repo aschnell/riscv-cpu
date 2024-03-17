@@ -1,42 +1,50 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0x64
 	srai	x2, x1, 1
 
--- CHECKS 1
+-- CHECK
 
 x1 = x"00000064"
 x2 = x"00000032"
 
 
--- ASM 2
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0xffff1234
 	srai	x2, x1, 4
 
--- CHECKS 2
+-- CHECK
 
 x1 = x"ffff1234"
 x2 = x"fffff123"
 
 
--- ASM 3
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0xffff1234
 	srai	x2, x1, 0
 
--- CHECKS 3
+-- CHECK
 
 x1 = x"ffff1234"
 x2 = x"ffff1234"
 
 
--- ASM 4
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0xffff1234
 	srai	x2, x1, 31
 
--- CHECKS 4
+-- CHECK
 
 x1 = x"ffff1234"
 x2 = x"ffffffff"

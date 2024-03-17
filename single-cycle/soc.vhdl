@@ -31,11 +31,11 @@ begin
   );
 
   imem_0: entity work.imem port map(
-    clk, '1', pc, instr
+    clk, reset, '1', pc, instr
   );
 
   dmem_0: entity work.dmem port map(
-    clk, mem_write, dataaddr, writedata, mem_ctl, readdata
+    clk, reset, mem_write, dataaddr, writedata, mem_ctl, readdata
   );
 
 end architecture rtl;

@@ -1,9 +1,11 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	addi	x1, x0, 100
 	addi	x2, x0, 2
 	sll	x3, x1, x2
 
--- CHECKS 1
+-- CHECK
 
 x3 = x"00000190"

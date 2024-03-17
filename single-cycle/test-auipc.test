@@ -1,9 +1,11 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	nop
 	auipc x1, 0x00020
 
--- CHECKS 1
+-- CHECK
 
 # reset sets PC to 0x10000
 

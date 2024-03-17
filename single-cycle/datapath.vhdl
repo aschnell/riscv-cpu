@@ -74,7 +74,7 @@ begin
   -- register logic
 
   rfile_0: entity work.rfile port map(
-    clk, ctl.rd_write, rs1_idx, rs2_idx, rd_idx, rs1, rs2, rd
+    clk, reset, ctl.rd_write, rs1_idx, rs2_idx, rd_idx, rs1, rs2, rd
   );
 
   -- TODO somehow yosys sees a loop for rd_src

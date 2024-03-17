@@ -11,6 +11,7 @@ use work.probe.all;
 entity imem is
   port(
     clk:        in  std_ulogic;
+    reset:      in  std_ulogic;
     re:         in  std_ulogic;
     addr:       in  std_ulogic_vector(XLEN - 1 downto 0);
     data_out:   out std_ulogic_vector(XLEN - 1 downto 0)
@@ -92,18 +93,22 @@ architecture rtl of imem is
 begin
 
   -- rtl_synthesis off
-  process(all) is
+  process(reset) is
   begin
-    if probe_fake_imem = '1' then
-      ram_data(0) <= probe_imem0;
-      ram_data(1) <= probe_imem1;
-      ram_data(2) <= probe_imem2;
-      ram_data(3) <= probe_imem3;
-      ram_data(4) <= probe_imem4;
-      ram_data(5) <= probe_imem5;
-      ram_data(6) <= probe_imem6;
-      ram_data(7) <= probe_imem7;
+
+    if reset then
+      if probe_fake = '1' then
+        ram_data(0) <= probe_in_imem0;
+        ram_data(1) <= probe_in_imem1;
+        ram_data(2) <= probe_in_imem2;
+        ram_data(3) <= probe_in_imem3;
+        ram_data(4) <= probe_in_imem4;
+        ram_data(5) <= probe_in_imem5;
+        ram_data(6) <= probe_in_imem6;
+        ram_data(7) <= probe_in_imem7;
+      end if;
     end if;
+
   end process;
   -- rtl_synthesis on
 
@@ -118,7 +123,7 @@ begin
   end process;
 
   -- rtl_synthesis off
-  probe_instr <= data_out;
+  probe_out_instr <= data_out;
   -- rtl_synthesis on
 
 end architecture rtl;

@@ -1,20 +1,24 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	addi	x1, x0, 0x64
 	srli	x2, x1, 1
 
--- CHECKS 1
+-- CHECK
 
 x1 = x"00000064"
 x2 = x"00000032"
 
 
--- ASM 2
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0xffff1234
 	srli	x2, x1, 4
 
--- CHECKS 2
+-- CHECK
 
 x1 = x"ffff1234"
 x2 = x"0ffff123"

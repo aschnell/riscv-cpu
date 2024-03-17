@@ -1,24 +1,28 @@
--- ASM 1
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0x12345678
 	li	x3, 0x00010000
 	sw	x1, 4(x3)
 	lb	x2, 6(x3)
 
--- CHECKS 1
+-- CHECK
 
 dmem1 = x"12345678"
 x2 = x"00000034"
 
 
--- ASM 2
+***** TEST *****
+
+-- ASM
 
 	li	x1, 0x123456f8
 	li	x3, 0x00010000
 	sw	x1, 4(x3)
 	lb	x2, 4(x3)
 
--- CHECKS 2
+-- CHECK
 
 dmem1 = x"123456f8"
 x2 = x"fffffff8"
